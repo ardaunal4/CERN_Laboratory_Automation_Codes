@@ -76,7 +76,7 @@ def initiate_keithley():
     keith.read_termination = '\n'
     keith.write_termination = '\n'
 #    keith.write("*IDN?")                                                                                                           # Sends a query command to the multimeter
-#    value = keith.write('++read eoi')                                                                                                       # Sends read command to the Prologix which says there is a query
+#    value = keith.write('++read eoi')                                                                                              # Sends read command to the Prologix which says there is a query
 #    value = keith.read()
     sleep(2)
     keith.write(":rout:close (@2)")
@@ -121,9 +121,9 @@ def acquisition_control(duration, csv_path):
     min_timer = 0 
     range_counter = 0
     
-    features = ["time", "current[mA]", "RANGE2[V]", "24bit[bin]"]                                        # Columns for csv file
+    features = ["time", "current[mA]", "RANGE2[V]", "24bit[bin]"]                                                                    # Columns for csv file
 
-    with open(csv_path + "\\data.csv", "w") as csv_file:                                                                              # Creates and write columns into csv file
+    with open(csv_path + "\\data.csv", "w") as csv_file:                                                                             # Creates and write columns into csv file
         csv_writer = csv.DictWriter(csv_file, fieldnames = features)
         csv_writer.writeheader()
     
@@ -142,7 +142,7 @@ def acquisition_control(duration, csv_path):
         loop_now_time = time()
         now = datetime.now().strftime("%H:%M:%S")
         
-        if abs(int(loop_now_time) - int(loop_start_time)) >= 1 :                                                                               # This if add 1 second time delay to entire process
+        if abs(int(loop_now_time) - int(loop_start_time)) >= 1 :                                                                      # This if add 1 second time delay to entire process
             print("now = ", now)
             loop_start_time = time()
             
@@ -163,7 +163,7 @@ def acquisition_control(duration, csv_path):
             range_counter += 1
             adc = abs(read_24bit(csv_path))
 
-            with open(csv_path + "\\data.csv", "a") as csv_files:                                                                 # Add taken values into opened CSV file
+            with open(csv_path + "\\data.csv", "a") as csv_files:                                                                      # Add taken values into opened CSV file
                 csv_writer = csv.DictWriter(csv_files, fieldnames = features)
                 info = {
                         "time" : now,
@@ -173,7 +173,7 @@ def acquisition_control(duration, csv_path):
                         }
                 csv_writer.writerow(info)
             sec_counter += 1 
-            print(adc)                                                                                             # Clear voltage values list
+            print(adc)                                                                                                                 # Clear voltage values list
            
     print("FINISH")
     print("-------------------------------------------------------------------------------")
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     else:
         print ("Successfully created the directory %s " % path) 
 
-    duration = 1435                                                                                                           # Duration of acquisition in minutes
+    duration = 1435                                                                                                                     # Duration of acquisition in minutes
 
     current = '14.4E-3'
     initiate_current_source(current)
