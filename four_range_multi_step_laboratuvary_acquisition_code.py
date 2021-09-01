@@ -17,7 +17,7 @@ import serial
 
 rm = pyvisa.ResourceManager()
 gs = rm.open_resource('TCPIP0::dcctyoko1.cern.ch::inst0::INSTR')
-keith = rm.open_resource('ASRL4::INSTR', send_end = True)                                                                         # send_end = True means that eoi opened
+keith = rm.open_resource('ASRL4::INSTR', send_end = True)                                                                          # send_end = True means that eoi opened
 ser = serial.Serial('COM6', 9600, timeout = 2)
 ser.flush() 
                                                                               
@@ -72,7 +72,7 @@ def initiate_keithley():
     keith.read_termination = '\n'
     keith.write_termination = '\n'
 #    keith.write("*IDN?")                                                                                                           # Sends a query command to the multimeter
-#    value = keith.write('++read eoi')                                                                                                       # Sends read command to the Prologix which says there is a query
+#    value = keith.write('++read eoi')                                                                                              # Sends read command to the Prologix which says there is a query
 #    value = keith.read()
     sleep(2)
     keith.write(":SENSe:FUNCtion 'VOLTage:DC'")
@@ -119,10 +119,11 @@ def acquisition_control(duration, csv_path, time_list, current_list):
     range_counter = 0
     voltage_list = []
     step = 1
-    
-    features = ["time", "step", "current[mA]", "RANGE1[V]", "RANGE2[V]", "RANGE3[V]", "RANGE4[V]", "measured_current[V]", "24bit[bin]"]                                        # Columns for csv file
+                                                                                                                                     
+    features = ["time", "step", "current[mA]", "RANGE1[V]", "RANGE2[V]",                                                             # Columns for csv file
+                "RANGE3[V]", "RANGE4[V]", "measured_current[V]", "24bit[bin]"]                                        
 
-    with open(csv_path + "\\data.csv", "w") as csv_file:                                                                              # Creates and write columns into csv file
+    with open(csv_path + "\\data.csv", "w") as csv_file:                                                                             # Creates and write columns into csv file
         csv_writer = csv.DictWriter(csv_file, fieldnames = features)
         csv_writer.writeheader()
     
@@ -141,7 +142,7 @@ def acquisition_control(duration, csv_path, time_list, current_list):
         loop_now_time = time()
         now = datetime.now().strftime("%H:%M:%S")
         
-        if abs(int(loop_now_time) - int(loop_start_time)) >= 5 :                                                                               # This if add 1 second time delay to entire process
+        if abs(int(loop_now_time) - int(loop_start_time)) >= 5 :                                                                      # This if add 1 second time delay to entire process
             print("now = ", now)
             loop_start_time = time()
             
@@ -161,7 +162,7 @@ def acquisition_control(duration, csv_path, time_list, current_list):
                 
             for i in range(5):
                 channel = i + 1
-                keith.write(":rout:close (@{})".format(channel))                                                                 # Changes number of channel
+                keith.write(":rout:close (@{})".format(channel))                                                                       # Changes number of channel
                 sleep(0.7)
                 keith.write(":SENSe:DATA?")
                 sleep(0.2)
@@ -173,7 +174,7 @@ def acquisition_control(duration, csv_path, time_list, current_list):
             range_counter += 1
             adc = abs(read_24bit(csv_path))
 
-            with open(csv_path + "\\data.csv", "a") as csv_files:                                                                 # Add taken values into opened CSV file
+            with open(csv_path + "\\data.csv", "a") as csv_files:                                                                      # Add taken values into opened CSV file
                 csv_writer = csv.DictWriter(csv_files, fieldnames = features)
                 info = {
                         "time" : now,
@@ -189,7 +190,7 @@ def acquisition_control(duration, csv_path, time_list, current_list):
                 csv_writer.writerow(info)
             sec_counter += 1 
             print(adc)
-            voltage_list.clear()                                                                                                 # Clear voltage values list
+            voltage_list.clear()                                                                                                        # Clear voltage values list
 
                 
     print("FINISH")
@@ -209,7 +210,7 @@ if __name__ == "__main__":
     else:
         print ("Successfully created the directory %s " % path) 
 
-    duration = 1435                                                                                                           # Duration of acquisition in minutes
+    duration = 1435                                                                                                                    # Duration of acquisition in minutes
 
     time_list = list(np.arange(1050, 86400, 1050)/60)
 
